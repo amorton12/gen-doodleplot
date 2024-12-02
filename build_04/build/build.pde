@@ -365,7 +365,7 @@ void drawLayer(ArrayList<PVector> path, color layerColor) {
   }
   endShape();
 
-  for(int p = 1; p < path.size(); p++) {
+  for(int p = 1; p < path.size()-1; p++) {
     PVector point = path.get(p);
     // Randomly draw a circle at some points with random size and weight proportional to the grid size
     // Can also draw a spiral if nodeShape is set to 1
