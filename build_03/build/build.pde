@@ -17,6 +17,8 @@
  * - 'C' or 'c': Toggle inverted colors.
  * - 'Q' or 'q': Decrease draw point frequency.
  * - 'W' or 'w': Increase draw point frequency.
+ * - 'P' or 'p': Toggle circle point display.
+ * - '+' or '-': Increase or decrease the circle point draw frequency.
  */
 
 import processing.svg.*;
@@ -30,7 +32,9 @@ String uniqueID;
 boolean displayParams = true;
 boolean leadIn = false;
 boolean invertedColors = true;
+boolean drawPoints = false;
 float drawSkip = 1;
+float circleDrawFrequency = 0.5;
 
 ArrayList<ArrayList<PVector>> paths;
 color[] layerColors;
@@ -121,6 +125,15 @@ void keyPressed() {
     redraw();
   } else if (key == 'w' || key == 'W') {
     drawSkip = constrain(drawSkip + 0.1, 0.1, 1);
+    redraw();
+  } else if (key == 'p' || key == 'P') {
+    drawPoints = !drawPoints;
+    redraw();
+  } else if (key == '+' || key == '=') {
+    circleDrawFrequency = constrain(circleDrawFrequency + 0.1, 0.1, 1);
+    redraw();
+  } else if (key == '-') {
+    circleDrawFrequency = constrain(circleDrawFrequency - 0.1, 0.1, 1);
     redraw();
   }
 }
@@ -344,6 +357,13 @@ void drawLayer(ArrayList<PVector> path, color layerColor) {
       continue;
     }
     curveVertex(point.x, point.y);
+    // Randomly draw a circle at some points with random size and weight proportional to the grid size
+    if ((random(1) > circleDrawFrequency) && drawPoints) {
+      int radius = (int)random(1, 5) * gridSize / 10;
+      strokeWeight((int)random(1, 5) * gridSize / 20); 
+      ellipse(point.x, point.y, radius, radius);
+      strokeWeight(2);
+    }
   }
   if (leadIn) {
     curveVertex(path.get(path.size() - 1).x, path.get(path.size() - 1).y);
@@ -374,9 +394,10 @@ void displayParameters() {
     .append(" | Layers (LEFT/RIGHT): ").append(layerCount)
     .append(" | Density (D/I): ").append(plotDensity)
     .append(" | Turn Freq ([/]): ").append(directionChangeFrequency)
+    .append(" | Snap to 90 (S): ").append(directions == 4 ? "On" : "Off")
     .append("\n")
     .append("Draw Freq (Q/W): ").append(nf(drawSkip, 1, 1))
-    .append(" | Snap to 90 (S): ").append(directions == 4 ? "On" : "Off")
+    .append(" | Points (P): ").append(drawPoints ? "On" : "Off")
     .append(" | Lead-in (L): ").append(leadIn ? "On" : "Off")
     .append(" | Colors (C): ").append(invertedColors ? "Inverted" : "Normal")
     .append("\n")
