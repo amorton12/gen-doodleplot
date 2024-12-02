@@ -360,9 +360,9 @@ void drawLayer(ArrayList<PVector> path, color layerColor) {
     // Randomly draw a circle at some points with random size and weight proportional to the grid size
     if ((random(1) < circleDrawFrequency) && drawPoints) {
       int radius = (int)random(1, 5) * gridSize / 10;
-      strokeWeight((int)random(1, 5) * gridSize / 20); 
+      //strokeWeight((int)random(1, 5) * gridSize / 20); // This doesn't work well with SVG export
       ellipse(point.x, point.y, radius, radius);
-      strokeWeight(2);
+      //strokeWeight(2);
     }
   }
   if (leadIn) {
