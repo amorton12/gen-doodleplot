@@ -2,6 +2,8 @@
 
 DoodlePlot is a Pen Plotter Design Generator with radiused corners. It allows you to create intricate designs with various parameters and export them as SVG files.
 
+![Example](ex-build.png)
+
 ## Key Controls
 
 - **T** or **t**: Toggle the display of the parameters panel.
