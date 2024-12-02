@@ -358,7 +358,7 @@ void drawLayer(ArrayList<PVector> path, color layerColor) {
     }
     curveVertex(point.x, point.y);
     // Randomly draw a circle at some points with random size and weight proportional to the grid size
-    if ((random(1) > circleDrawFrequency) && drawPoints) {
+    if ((random(1) < circleDrawFrequency) && drawPoints) {
       int radius = (int)random(1, 5) * gridSize / 10;
       strokeWeight((int)random(1, 5) * gridSize / 20); 
       ellipse(point.x, point.y, radius, radius);
@@ -397,7 +397,8 @@ void displayParameters() {
     .append(" | Snap to 90 (S): ").append(directions == 4 ? "On" : "Off")
     .append("\n")
     .append("Draw Freq (Q/W): ").append(nf(drawSkip, 1, 1))
-    .append(" | Points (P): ").append(drawPoints ? "On" : "Off")
+    .append(" | Circles (P): ").append(drawPoints ? "On" : "Off")
+    .append(" | Circle Freq (+/-): ").append(nf(circleDrawFrequency, 1, 1))
     .append(" | Lead-in (L): ").append(leadIn ? "On" : "Off")
     .append(" | Colors (C): ").append(invertedColors ? "Inverted" : "Normal")
     .append("\n")
