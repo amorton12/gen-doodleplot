@@ -384,17 +384,26 @@ void drawLayer(ArrayList<PVector> path, color layerColor) {
 void spiral(float x, float y, float diameter) {
   float angle = 0;
   float radius = 0;
+  float angleStep = TWO_PI / 50;  // Increased angle step to reduce points
+  float radiusStep = 0.05;        // Increased radius growth for wider spacing
+
   pushMatrix();
   translate(x, y);
   beginShape();
-  while(radius <= diameter / 2) {
-    vertex(cos(angle) * radius, sin(angle) * radius);
-    angle += TWO_PI / 4000;
-    radius += .00075;
+  
+  // Use fewer points with an adaptive approach
+  while (radius <= diameter / 2) {
+    curveVertex(cos(angle) * radius, sin(angle) * radius);
+    
+    // Increase the angle and radius in a way that reduces points over time
+    angle += angleStep / (1 + radius * 0.05);  // Reduced adaptive scaling
+    radius += radiusStep / (1 + radius * 0.05);  // Increased radius growth
   }
+  
   endShape();
   popMatrix();
 }
+
 
 void exportDesign() {
   String fileName = "doodleplot_" + uniqueID + ".svg";
