@@ -19,6 +19,7 @@
  * - 'W' or 'w': Increase draw point frequency.
  * - 'P' or 'p': Toggle circle point display.
  * - '+' or '-': Increase or decrease the circle point draw frequency.
+ * - 'X' or 'x': Toggle spirals instead of circles.
  */
 
 import processing.svg.*;
@@ -35,6 +36,7 @@ boolean invertedColors = true;
 boolean drawPoints = false;
 float drawSkip = 1;
 float circleDrawFrequency = 0.5;
+int nodeShape = 0; // 0: Circle, 1: Spiral
 
 ArrayList<ArrayList<PVector>> paths;
 color[] layerColors;
@@ -134,6 +136,9 @@ void keyPressed() {
     redraw();
   } else if (key == '-') {
     circleDrawFrequency = constrain(circleDrawFrequency - 0.1, 0.1, 1);
+    redraw();
+  } else if (key == 'x' || key == 'X') {
+    nodeShape = (nodeShape == 0) ? 1 : 0;
     redraw();
   }
 }
@@ -358,10 +363,19 @@ void drawLayer(ArrayList<PVector> path, color layerColor) {
     }
     curveVertex(point.x, point.y);
     // Randomly draw a circle at some points with random size and weight proportional to the grid size
-    if ((random(1) < circleDrawFrequency) && drawPoints) {
+    // Can also draw a spiral if nodeShape is set to 1
+    if ((random(1) < circleDrawFrequency) && drawPoints && nodeShape == 0) {
       int radius = (int)random(1, 5) * gridSize / 10;
       //strokeWeight((int)random(1, 5) * gridSize / 20); // This doesn't work well with SVG export
       ellipse(point.x, point.y, radius, radius);
+      //strokeWeight(2);
+    } else if ((random(1) < circleDrawFrequency) && drawPoints && nodeShape == 1) {
+      int radius = (int)random(1, 5) * gridSize / 10;
+      //strokeWeight((int)random(1, 5) * gridSize / 20); // This doesn't work well with SVG export
+      float angle = random(TWO_PI);
+      float x = point.x + cos(angle) * radius;
+      float y = point.y + sin(angle) * radius;
+      line(point.x, point.y, x, y);
       //strokeWeight(2);
     }
   }
@@ -398,6 +412,7 @@ void displayParameters() {
     .append("\n")
     .append("Draw Freq (Q/W): ").append(nf(drawSkip, 1, 1))
     .append(" | Circles (P): ").append(drawPoints ? "On" : "Off")
+    .append(" | Shape (X): ").append(nodeShape == 0 ? "Circle" : "Spiral")
     .append(" | Circle Freq (+/-): ").append(nf(circleDrawFrequency, 1, 1))
     .append(" | Lead-in (L): ").append(leadIn ? "On" : "Off")
     .append(" | Colors (C): ").append(invertedColors ? "Inverted" : "Normal")
