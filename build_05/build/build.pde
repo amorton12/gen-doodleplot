@@ -21,12 +21,12 @@ ArrayList<ArrayList<PVector>> paths;
 color[] layerColors;
 
 color[][] palettes = {
-  {color(50, 150, 150), color(150, 50, 150), color(150, 150, 50)}, // Palette 1
-  {color(100, 200, 200), color(200, 100, 200), color(200, 200, 100)}, // Palette 2
-  {color(0, 100, 100), color(100, 0, 100), color(100, 100, 0)} // Palette 3
+  {#f6bd60, #f5cac3, #84a59d, #f28482}, // Palette 1
+  {#540d6e, #ee4266, #ffd23f, #3bceac, #0ead69}, // Palette 2
+  {#004e64, #00a5cf, #9fffcb, #25a18e, #7ae582} // Palette 3
 };
 int currentPalette = 0;
-color backgroundColor = color(255); // Start with white background
+color backgroundColor = color(0); // Start with black background
 
 void setup() {
   size(800, 800);
