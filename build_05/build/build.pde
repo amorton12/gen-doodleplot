@@ -1,5 +1,6 @@
 /* * Pen Plotter Design Generator(With Radiused Corners) * * Key Controls: * - 'T' or 't': Toggle the display of the parameters panel. * - 'G' or 'g': Generate a new design with random paths. * - 'E' or 'e': Export the current design to an SVG file. * - Arrow Up: Increase grid size(snapping resolution). * - Arrow Down: Decrease grid size(snapping resolution). * - Arrow Left: Decrease the number of layers. * - Arrow Right: Increase the number of layers. * - 'D' or 'd': Decrease plot density. * - 'I' or 'i': Increase plot density. * - 'L' or 'l': Toggle lead-in lines. * - '[', ']': Decrease or increase the direction change frequency. * - 'S' or 's': Toggle snap to 90-degree angles. * - 'C' or 'c': Toggle inverted colors. * - 'Q' or 'q': Decrease draw point frequency. * - 'W' or 'w': Increase draw point frequency. * - 'P' or 'p': Toggle circle point display. * - '+' or '-': Increase or decrease the circle point draw frequency. * - 'X' or 'x': Toggle spirals instead of circles. */
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import processing.svg.*;
 
 int gridSize = 20;
@@ -406,7 +407,8 @@ void spiral(float x, float y, float diameter) {
 
 
 void exportDesign() {
-  String fileName = "doodleplot_" + uniqueID + ".svg";
+  String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+  String fileName = "doodleplot_" + timestamp + ".svg";
   beginRecord(SVG, fileName);
 
   for(int i = 0;
