@@ -20,6 +20,14 @@ int nodeShape = 0; // 0: Circle, 1: Spiral
 ArrayList<ArrayList<PVector>> paths;
 color[] layerColors;
 
+color[][] palettes = {
+  {#f6bd60, #f5cac3, #84a59d, #f28482}, // Palette 1
+  {#540d6e, #ee4266, #ffd23f, #3bceac, #0ead69}, // Palette 2
+  {#004e64, #00a5cf, #9fffcb, #25a18e, #7ae582} // Palette 3
+};
+int currentPalette = 0;
+color backgroundColor = color(0); // Start with black background
+
 void setup() {
   size(800, 800);
   noLoop();
@@ -27,22 +35,9 @@ void setup() {
 }
 
 void draw() {
-  // Draw the background black if colors are inverted
+  background(backgroundColor);
 
-  if (invertedColors) {
-    background(0);
-  } else {
-    background(255);
-  }
-  // Draw the boundary box
-  //stroke(0); // Set the stroke color to black
-  //noFill(); // No fill for the rectangle
-  //strokeWeight(2); // Set the stroke weight to 2
-  //rect(0, 0, width, height); // Draw the rectangle at the canvas boundaries
-
-  for(int i = 0;
-  i < paths.size();
-  i++) {
+  for(int i = 0; i < paths.size(); i++) {
     drawLayer(paths.get(i), layerColors[i]);
   }
 
@@ -55,94 +50,76 @@ void keyPressed() {
   if (key == 'g' || key == 'G') {
     generateDesign();
     redraw();
-  }
-  else if (key == 't' || key == 'T') {
+  } else if (key == 't' || key == 'T') {
     displayParams = !displayParams;
     redraw();
-  }
-  else if (key == 'e' || key == 'E') {
+  } else if (key == 'e' || key == 'E') {
     exportDesign();
-  }
-  else if (keyCode == UP) {
+  } else if (key == 'c' || key == 'C') {
+    currentPalette = (currentPalette + 1) % palettes.length;
+    generateDesign();
+    redraw();
+  } else if (key == 'b' || key == 'B') {
+    backgroundColor = (backgroundColor == color(255)) ? color(0) : color(255);
+    redraw();
+  } else if (keyCode == UP) {
     gridSize = constrain(gridSize + 5, 5, 100);
     generateDesign();
     redraw();
-  }
-  else if (keyCode == DOWN) {
+  } else if (keyCode == DOWN) {
     gridSize = constrain(gridSize - 5, 5, 100);
     generateDesign();
     redraw();
-  }
-  else if (keyCode == LEFT) {
+  } else if (keyCode == LEFT) {
     layerCount = constrain(layerCount - 1, 1, 10);
     generateDesign();
     redraw();
-  }
-  else if (keyCode == RIGHT) {
+  } else if (keyCode == RIGHT) {
     layerCount = constrain(layerCount + 1, 1, 10);
     generateDesign();
     redraw();
-  }
-  else if (key == 'd' || key == 'D') {
+  } else if (key == 'd' || key == 'D') {
     plotDensity = constrain(plotDensity - 1, 1, 40);
     generateDesign();
     redraw();
-  }
-  else if (key == 'i' || key == 'I') {
+  } else if (key == 'i' || key == 'I') {
     plotDensity = constrain(plotDensity + 1, 1, 40);
     generateDesign();
     redraw();
-  }
-  else if (key == 'l' || key == 'L') {
+  } else if (key == 'l' || key == 'L') {
     leadIn = !leadIn;
     redraw();
-  }
-  else if (key == '[') {
+  } else if (key == '[') {
     directionChangeFrequency = constrain(directionChangeFrequency - 1, 1, 10);
     generateDesign();
     redraw();
-  }
-  else if (key == ']') {
+  } else if (key == ']') {
     directionChangeFrequency = constrain(directionChangeFrequency + 1, 1, 10);
     generateDesign();
     redraw();
-  }
-  else if (key == 's' || key == 'S') {
-    directions =(directions == 4) ? 8 : 4;
+  } else if (key == 's' || key == 'S') {
+    directions = (directions == 4) ? 8 : 4;
     generateDesign();
     redraw();
-  }
-  else if (key == 'c' || key == 'C') {
-    invertedColors = !invertedColors;
-    for(int i = 0;
-    i < layerColors.length;
-    i++) {
-      layerColors[i] = color(255 - red(layerColors[i]), 255 - green(layerColors[i]), 255 - blue(layerColors[i]));
-    }
-    redraw();
-  }
-  else if (key == 'q' || key == 'Q') {
+  } else if (key == 'q' || key == 'Q') {
     drawSkip = constrain(drawSkip - 0.1, 0.1, 1);
     redraw();
-  }
-  else if (key == 'w' || key == 'W') {
+  } else if (key == 'w' || key == 'W') {
     drawSkip = constrain(drawSkip + 0.1, 0.1, 1);
     redraw();
-  }
-  else if (key == 'p' || key == 'P') {
+  } else if (key == 'x' || key == 'X') {
+    nodeShape = (nodeShape == 0) ? 1 : 0;
+    redraw();
+  } else if (key == '+') {
+    circleDrawFrequency = constrain(circleDrawFrequency + 0.1, 0.1, 10);
+    generateDesign();
+    redraw();
+  } else if (key == '-') {
+    circleDrawFrequency = constrain(circleDrawFrequency - 0.1, 0.1, 10);
+    generateDesign();
+    redraw();
+  } else if (key == 'p' || key == 'P') {
     drawPoints = !drawPoints;
-    redraw();
-  }
-  else if (key == '+' || key == '=') {
-    circleDrawFrequency = constrain(circleDrawFrequency + 0.1, 0.1, 1);
-    redraw();
-  }
-  else if (key == '-') {
-    circleDrawFrequency = constrain(circleDrawFrequency - 0.1, 0.1, 1);
-    redraw();
-  }
-  else if (key == 'x' || key == 'X') {
-    nodeShape =(nodeShape == 0) ? 1 : 0;
     redraw();
   }
 }
@@ -152,9 +129,9 @@ void generateDesign() {
   layerColors = new color[layerCount];
   uniqueID = nf((int)random(10000), 4); // Generate a unique ID
 
-  for (int i=0; i<layerCount; i++) {
+  for (int i = 0; i < layerCount; i++) {
     paths.add(generateLayer());
-    layerColors[i] = color(random(50, 150), random(50, 150), random(50, 150)); // Dark, distinct colors
+    layerColors[i] = palettes[currentPalette][i % palettes[currentPalette].length];
   }
 }
 
@@ -411,9 +388,7 @@ void exportDesign() {
   String fileName = "doodleplot_" + timestamp + ".svg";
   beginRecord(SVG, fileName);
 
-  for(int i = 0;
-  i < paths.size();
-  i++) {
+  for(int i = 0; i < paths.size(); i++) {
     drawLayer(paths.get(i), layerColors[i]);
   }
   endRecord();
@@ -423,12 +398,26 @@ void exportDesign() {
 void displayParameters() {
   fill(0);
   noStroke();
-  rect(0, height - 60, width, 50); // Black background for text
+  rect(0, height - 80, width, 80); // Black background for text
   fill(255);
   textSize(13);
   StringBuilder sb = new StringBuilder();
-  sb.append("Grid(UP/DOWN): ").append(gridSize) .append(" | Layers(LEFT/RIGHT): ").append(layerCount) .append(" | Density(D/I): ").append(plotDensity) .append(" | Turn Freq([/]): ").append(directionChangeFrequency) .append(" | Snap to 90(S): ").append(directions == 4 ? "On" : "Off") .append("\n") .append("Draw Freq(Q/W): ").append(nf(drawSkip, 1, 1)) .append(" | Circles(P): ").append(drawPoints ? "On" : "Off") .append(" | Shape(X): ").append(nodeShape == 0 ? "Circle" : "Spiral") .append(" | Circle Freq(+/-): ").append(nf(circleDrawFrequency, 1, 1)) .append(" | Lead-in(L): ").append(leadIn ? "On" : "Off") .append(" | Colors(C): ").append(invertedColors ? "Inverted" : "Normal") .append("\n") .append("Toggle Overlay(t) | Generate(g) | Export(e)");
-  text(sb.toString(), 10, height - 40);
+  sb.append("Grid(UP/DOWN): ").append(gridSize)
+    .append(" | Layers (LEFT/RIGHT): ").append(layerCount)
+    .append(" | Density (D/I): ").append(plotDensity)
+    .append(" | Turn Freq ([/]): ").append(directionChangeFrequency)
+    .append(" | Snap to 90 (S): ").append(directions == 4 ? "On" : "Off")
+    .append(" | Draw Freq (Q/W): ").append(nf(drawSkip, 1, 1))
+    .append("\n")
+    .append("Nodes (P): ").append(drawPoints ? "On" : "Off")
+    .append(" | Node Shape (X): ").append(nodeShape == 0 ? "Circle" : "Spiral")
+    .append(" | Node Freq(+/-): ").append(nf(circleDrawFrequency, 1, 1))
+    .append(" | Lead-in (L): ").append(leadIn ? "On" : "Off")
+    .append(" | Palette (C): ").append(currentPalette + 1)
+    .append(" | Background (B): ").append(backgroundColor == color(255) ? "White" : "Black")
+    .append("\n")
+    .append("Toggle Overlay (T) | Generate (G) | Export (E)");
+  text(sb.toString(), 10, height - 60);
 }
 
 int snapToGrid(float value) {
