@@ -1,3 +1,4 @@
 *.svg
 *.autosave
 .vscode/
+.DS_Store
